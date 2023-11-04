@@ -11,19 +11,20 @@
 
 # ********** Setup
 import subprocess
-import os
+# TODO do I need this? import os
+from openpyxl import Workbook
 
 # ********** Where we are
-# Get directory, ask where to go
+# TODO Ask where to find pics
+# TODO Find Irfanview - 64, 32 or PortableApps (c or user)
 
 # ********* Run Irfanview
 subprocess.run(["iview_64.exe /info=DPI_list_irfanviewOUT.txt", "text=true"])
 
 # ********* Extract data from TXT file
-# headers
+# TODO get each set of info for an image, then move to Excel, place, then return
 
 # ********* Write data to new Excel file
-from openpyxl import Workbook
 filename = "DPI_list.xlsx"
 
 workbook = Workbook()
@@ -35,11 +36,11 @@ sheet["B1"] = "world!"
 workbook.save(filename=filename)
 
 # ********* Add formulae to Excel file
-# formula for size/DPI coefficient
-# formula for 1/4 page
-# formula for 1/2 page
-# formula for 1/1 page
-# color cells if lower than acceptable
+# TODO formula for size/DPI coefficient
+# TODO formula for 1/4 page
+# TODO formula for 1/2 page
+# TODO formula for 1/1 page
+# TODO color cells if lower than acceptable, Green above 600, yellow 400-600, red for under 400
 
 # ********* Cleanup
-#del TXT file
+# TODO del Irfanview TXT file
