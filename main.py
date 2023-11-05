@@ -1,39 +1,62 @@
-# This is a sample Python script.
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
-
-# subprocess.run(["ls", "-l"])
 # from https://stackoverflow.com/questions/89228/how-do-i-execute-a-program-or-call-a-system-command
 # use os.path.expandvars to pass variables to subprocess
-
-# On excel see https://realpython.com/openpyxl-excel-spreadsheets-python/
+# On Excel see https://realpython.com/openpyxl-excel-spreadsheets-python/
+#
 
 # ********** Setup
 import subprocess
-# TODO do I need this? import os
-from openpyxl import Workbook
+import os
+import sys
+# from openpyxl import Workbook
+from distutils.spawn import find_executable
 
 # ********** Where we are
 # TODO Ask where to find pics
-# TODO Find Irfanview - 64, 32 or PortableApps (c or user)
+Pic_Dir = '"c:\\Users\\fAB\\Desktop\\MCB_BMRB\\^photos\\ZD215 Piano\\*.*"'
 
-# ********* Run Irfanview
-subprocess.run(["iview_64.exe /info=DPI_list_irfanviewOUT.txt", "text=true"])
+# ********* Find and Run Irfanview
+IrfanProg_Name = "i_view64.exe"
+IrfanProg_Cmd = find_executable(IrfanProg_Name)
+if not IrfanProg_Cmd:
+    IrfanProg_Cmd = (os.path.expanduser('~')) + "\\PortableApps\\IrfanViewPortable\\App\\IrfanView64\\i_view64.exe"
+if not IrfanProg_Cmd:
+    IrfanProg_Name = "i_view32.exe"
+    IrfanProg_Cmd = find_executable(IrfanProg_Name)
+if not IrfanProg_Cmd:
+    IrfanProg_Cmd = (os.path.expanduser('~')) + "\\PortableApps\\IrfanViewPortable\\App\\IrfanView\\i_view32.exe"
+if not IrfanProg_Cmd:
+    sys.exit("Irfanview not installed, please install and run again")
+
+IrfanInfo_Txt = "DPI_list_irfanviewOUT.txt"  # This is the temp file that IrfanView creates
+IrfanProg_Cmd = IrfanProg_Cmd + " " + Pic_Dir + " /info=" + IrfanInfo_Txt  # This calls IrfanView and creates TXT file
+
+subprocess.run(IrfanProg_Cmd)
 
 # ********* Extract data from TXT file
 # TODO get each set of info for an image, then move to Excel, place, then return
+text = open(IrfanInfo_Txt)
+
+def retrieve_line(line_count, f):
+    curr_line = line_count, f.readline()
+def det_header():
+    if
+
+# find https://www.w3schools.com/python/ref_string_find.asp
+# https://stackoverflow.com/questions/29836812/extract-text-after-specific-character
 
 # ********* Write data to new Excel file
-filename = "DPI_list.xlsx"
+# filename = "DPI_list.xlsx"
 
-workbook = Workbook()
-sheet = workbook.active
+# workbook = Workbook()
+# sheet = workbook.active
 
-sheet["A1"] = "hello"
-sheet["B1"] = "world!"
+# sheet["A1"] = "hello"
+# sheet["B1"] = "world!"
 
-workbook.save(filename=filename)
+# workbook.save(filename=filename)
 
 # ********* Add formulae to Excel file
 # TODO formula for size/DPI coefficient
