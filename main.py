@@ -1,21 +1,17 @@
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
-# from https://stackoverflow.com/questions/89228/how-do-i-execute-a-program-or-call-a-system-command
-# use os.path.expandvars to pass variables to subprocess
-# On Excel see https://realpython.com/openpyxl-excel-spreadsheets-python/
-#
+#!/usr/bin/env python
+
+__license__ = "GPL"
 
 # ********** Setup
 import subprocess
 import os
 import sys
-# from openpyxl import Workbook
+from openpyxl import Workbook
 from distutils.spawn import find_executable
 
 # ********** Where we are
 # TODO Ask where to find pics
-Pic_Dir = '"c:\\Users\\fAB\\Desktop\\MCB_BMRB\\^photos\\ZD215 Piano\\*.*"'
+Pic_Dir = '"c:\\Users\\fAB\\Desktop\\MCB_BMRB\\^photos\\ZD215 Piano\\*.*"'  # Testing REM
 
 # ********* Find and Run Irfanview
 IrfanProg_Name = "i_view64.exe"
@@ -31,32 +27,39 @@ if not IrfanProg_Cmd:
     sys.exit("Irfanview not installed, please install and run again")
 
 IrfanInfo_Txt = "DPI_list_irfanviewOUT.txt"  # This is the temp file that IrfanView creates
-IrfanProg_Cmd = IrfanProg_Cmd + " " + Pic_Dir + " /info=" + IrfanInfo_Txt  # This calls IrfanView and creates TXT file
 
+IrfanProg_Cmd = IrfanProg_Cmd + " " + Pic_Dir + " /info=" + IrfanInfo_Txt  # This calls IrfanView and creates TXT file
 subprocess.run(IrfanProg_Cmd)
 
 # ********* Extract data from TXT file
 # TODO get each set of info for an image, then move to Excel, place, then return
+
+excel_filename = "DPI_list.xlsx"
+
+excel_workbook = Workbook()
+excel_sheet = excel_workbook.active
+excel_row = 5
+
 text = open(IrfanInfo_Txt)
 
-def retrieve_line(line_count, f):
-    curr_line = line_count, f.readline()
-def det_header():
-    if
+with open(IrfanInfo_Txt) as IrfanInfo_Data:
+    for line in IrfanInfo_Data:
+        if not line:
+            excel_row = excel_row + 1
+            continue
+        if not " = " in line: continue
+        img_header, img_info = line.split(" = ")
+
+
+excel_workbook.save(filename=excel_filename)
 
 # find https://www.w3schools.com/python/ref_string_find.asp
 # https://stackoverflow.com/questions/29836812/extract-text-after-specific-character
 
 # ********* Write data to new Excel file
-# filename = "DPI_list.xlsx"
 
-# workbook = Workbook()
-# sheet = workbook.active
-
-# sheet["A1"] = "hello"
-# sheet["B1"] = "world!"
-
-# workbook.save(filename=filename)
+# excel_sheet["A1"] = "hello"
+# excel_sheet["B1"] = "world!"
 
 # ********* Add formulae to Excel file
 # TODO formula for size/DPI coefficient
@@ -67,3 +70,11 @@ def det_header():
 
 # ********* Cleanup
 # TODO del Irfanview TXT file
+
+
+# Press Shift+F10 to execute it or replace it with your code.
+# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# from https://stackoverflow.com/questions/89228/how-do-i-execute-a-program-or-call-a-system-command
+# use os.path.expandvars to pass variables to subprocess
+# On Excel see https://realpython.com/openpyxl-excel-spreadsheets-python/
