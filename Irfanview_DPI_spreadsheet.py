@@ -30,6 +30,8 @@ root = tk.Tk()
 root.withdraw()
 pic_dir = filedialog.askdirectory(title="Select Picture Folder")
 pic_dir = pic_dir + '/'
+if not pic_dir:
+    sys.exit('No folder selected, please run again')
 
 # ********** Intro
 print("All the info for this program comes from IrfanView, if that data is wrong then everything else will be wrong")
