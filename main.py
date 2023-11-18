@@ -12,6 +12,8 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment
 from openpyxl.comments import Comment
 from openpyxl.formatting.rule import FormulaRule
+import tkinter as tk
+from tkinter import filedialog
 
 # ********** General Variables
 
@@ -24,8 +26,10 @@ img_coef_page_min = 14.4  # this is the equivalent of a (8in x 10in @ 300DPI / 1
 irfan_info_txt = 'DPI_list_irfanviewOUT.txt'
 excel_filename = 'DPI_list.xlsx'
 
-# TODO Ask where to find pics
-pic_dir = 'c:\\Users\\fAB\\Desktop\\MCB_BMRB\\^photos\\ZD215 Piano\\'  # Testing REM
+root = tk.Tk()
+root.withdraw()
+pic_dir = filedialog.askdirectory(title="Select Picture Folder")
+pic_dir = pic_dir + '/'
 
 # ********** Intro
 print("All the info for this program comes from IrfanView, if that data is wrong then everything else will be wrong")
@@ -51,7 +55,7 @@ if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
 excel_filename = os.path.join(pic_dir, excel_filename)
 if os.path.exists(excel_filename):  # Delete Excel file if it exists
     os.remove(excel_filename)
-irfan_prog_cmd = irfan_prog_cmd + ' ' + '"' + pic_dir + '*.*' + '"' + ' /info=' + irfan_info_txt
+irfan_prog_cmd = irfan_prog_cmd + ' ' + '"' + pic_dir + '*.*' + '"' + ' /info=' + '"' + irfan_info_txt + '"'
 # OLD REM subprocess.run(irfan_prog_cmd)
 with open(os.devnull, 'w') as devnull:
     subprocess.check_call(irfan_prog_cmd, stderr=devnull)
@@ -229,12 +233,10 @@ interactive_sheet.column_dimensions['F'].alignment = Alignment(horizontal='cente
 excel_workbook.save(filename=excel_filename)
 excel_workbook.close()
 
-# ********* Add formulae to Excel file
-# TODO color cells if lower than acceptable, Green above 600, yellow 400-600, red for under 400
-
 # ********* Cleanup
 if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
     os.remove(irfan_info_txt)
+print('*****************************************')
 print('Done, please check the Excel file.')
 print('Remember that the image info is only as good as the info from IrfanView...')
 print('so if authors "fudge" the image DPI then this program will be wrong!')
