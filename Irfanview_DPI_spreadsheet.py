@@ -235,7 +235,7 @@ interactive_sheet.column_dimensions['F'].alignment = Alignment(horizontal='cente
 excel_workbook.save(filename=excel_filename)
 excel_workbook.close()
 
-# ********* Cleanup
+# ********* Outtro
 if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
     os.remove(irfan_info_txt)
 print('*****************************************')
