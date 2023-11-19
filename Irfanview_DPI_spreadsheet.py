@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 __license__ = 'GPL'
+__version__ = '0.1'
 
 # ********** Setup
 import subprocess
@@ -20,12 +21,9 @@ from tkinter import filedialog
 # ********** General Variables
 
 # generate IDEAL and MIN Image Coefficient
-# Formula: Image Quality Coefficient = ((Image width in inches * DPI) * (Image height in inches * DPI)) / 1000000
+# Formula: Image Quality Coefficient = ((Image width in inches * DPI) * (Image height in inches * DPI)) / 1,000,000
 img_coef_page = 28.8  # this is the equivalent of a (8in x 10in @ 600DPI / 1000000) for a 1/1 page IDEAL
-img_coef_page_min = 14.4  # this is the equivalent of a (8in x 10in @ 300DPI / 1000000) for a 1/1 page MIN
-
-# Version number
-script_ver_actual = '0.1'
+img_coef_page_min = 7.2  # this is the equivalent of a (8in x 10in @ 300DPI / 1000000) for a 1/1 page MIN
 
 # Terminal colors
 
@@ -63,13 +61,25 @@ pr_blue('The program will take a while, please be patient...')
 # ********** Check for updates
 # Get latest version from web
 url = 'https://fabfab1.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
-resp = requests.get(url)
-script_ver_ideal = resp.text
+try:
+    resp = requests.get(url)
+    resp.raise_for_status()
+except requests.exceptions.RequestException as e:
+    pr_red('Warning: Could not get latest version')
+    print(e)
+    pr_red('Press Enter to continue without checking version')
+    input()
 
-# Compare versions
+script_ver_ideal = resp.text
+script_ver_actual = __version__
+
 if script_ver_actual != script_ver_ideal:
-    pr_red('A new version is available:'), print(script_ver_ideal)
-    input("Press Enter to continue, or update the program")
+    ver_text_print = 'You have version ' + script_ver_actual + ' and the latest version is ' + script_ver_ideal
+    pr_red(ver_text_print)
+    pr_red('Press Enter to continue, or update the program')
+    input()
+else:
+    pr_blue('Good, you have the latest version of the program.')
 
 # ********* Find and Run Irfanview
 irfan_prog_name = 'i_view64.exe'
@@ -243,11 +253,20 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                 excel_sheet['L' + str(excel_row)] = False
                 excel_sheet['L' + str(excel_row)].fill = red_fill
 
+# Comments to the Excel sheet
+comment = """This is the minimum quality @600 DPI for this print size. It was generated using this formula: 
+Image Quality Coefficient = ((Image width in inches * DPI) * (Image height in inches * DPI)) / 1,000,000"""
+excel_sheet['H3'].comment = Comment(comment, 'FAB')
+excel_sheet['I3'].comment = Comment(comment, 'FAB')
+excel_sheet['J3'].comment = Comment(comment, 'FAB')
+excel_sheet['K3'].comment = Comment(comment, 'FAB')
+excel_sheet['L3'].comment = Comment(comment, 'FAB')
+
 # Now set up the interactive sheet
 interactive_sheet['F3'] = 28.8
 comment = """This is the minimum quality you are looking for. You can change this number 
 and the info below changes. Generate this number using this formula: 
-Image Quality Coefficient = ((Image width in inches * DPI) * (Image height in inches * DPI)) / 1000000"""
+Image Quality Coefficient = ((Image width in inches * DPI) * (Image height in inches * DPI)) / 1,000,000"""
 interactive_sheet['F3'].comment = Comment(comment, 'FAB')
 
 # Set column widths and alignment
