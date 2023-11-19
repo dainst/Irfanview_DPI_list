@@ -7,6 +7,7 @@ import subprocess
 import os
 import sys
 import datetime
+import time
 from distutils.spawn import find_executable
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment
@@ -22,6 +23,9 @@ from tkinter import filedialog
 img_coef_page = 28.8  # this is the equivalent of a (8in x 10in @ 600DPI / 1000000) for a 1/1 page IDEAL
 img_coef_page_min = 14.4  # this is the equivalent of a (8in x 10in @ 300DPI / 1000000) for a 1/1 page MIN
 
+# Version number
+script_ver_actual = '0.1.0'
+
 # Filenames
 irfan_info_txt = 'DPI_list_irfanviewOUT.txt'
 excel_filename = 'DPI_list.xlsx'
@@ -34,8 +38,27 @@ if not pic_dir:
     sys.exit('No folder selected, please run again')
 
 # ********** Intro
-print("All the info for this program comes from IrfanView, if that data is wrong then everything else will be wrong")
-print("This is an executable, for the source code please look on GitHub for Irfanview_DPI_list")
+os.system('color 1f') # sets the background to blue
+print()
+print('                 ******************************************************')
+print('                 *                    DAI ZWD-Redaktion               *')
+print('                 *                Irfanview DPI Spreadsheet           *')
+print('                 ******************************************************')
+print()
+print('All the info for this program comes from IrfanView, if that data is wrong then everything else will be wrong')
+print('This is an executable, for the source code please look on GitHub for Irfanview_DPI_list')
+print('The program will take a while, please be patient...')
+
+# Check version number
+script_ver_online = 'https://fabfab1.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
+script_ver_txt = 'DPI_list_ver.txt'
+get_version_number = f[powershell -Command "Invoke-WebRequest %_TagToolBatVerOnline% -OutFile script_ver_txt"]
+with open(os.devnull, 'w') as devnull:
+    subprocess.check_call(get_version_number, stderr=devnull)
+script_ver_ideal = readfiles(script_ver_txt)
+if not script_ver_actual == script_ver_ideal:
+    print('There is a new version of this program available, please download it from GitHub')
+    input('Or press ENTER to continue with this version for now')
 
 # ********* Find and Run Irfanview
 irfan_prog_name = 'i_view64.exe'
@@ -170,6 +193,7 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
             interactive_sheet.conditional_formatting.add('F1:F5000', rule)
 
             # WEB Page
+            excel_sheet['H3'] = (0.10 * img_coef_page)
             if img_coef >= (0.10 * img_coef_page):
                 excel_sheet['H' + str(excel_row)] = True
             else:
@@ -177,6 +201,7 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                 excel_sheet['H' + str(excel_row)].fill = red_fill
 
             # 1/4 Page
+            excel_sheet['I3'] = (0.25 * img_coef_page)
             if img_coef >= (0.25 * img_coef_page):
                 excel_sheet['I' + str(excel_row)] = True
             else:
@@ -184,20 +209,23 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                 excel_sheet['I' + str(excel_row)].fill = red_fill
 
             # 1/2 Page
-            if img_coef >= (0.5 * img_coef_page):
+            excel_sheet['J3'] = (0.50 * img_coef_page)
+            if img_coef >= (0.50 * img_coef_page):
                 excel_sheet['J' + str(excel_row)] = True
             else:
                 excel_sheet['J' + str(excel_row)] = False
                 excel_sheet['J' + str(excel_row)].fill = red_fill
 
             # 1/1 Page
-            if img_coef >= (1 * img_coef_page):
+            excel_sheet['k3'] = (1.0 * img_coef_page)
+            if img_coef >= (1.0 * img_coef_page):
                 excel_sheet['K' + str(excel_row)] = True
             else:
                 excel_sheet['K' + str(excel_row)] = False
                 excel_sheet['K' + str(excel_row)].fill = red_fill
 
             # Beilage Page
+            excel_sheet['L3'] = (2.50 * img_coef_page)
             if img_coef >= (2.5 * img_coef_page):
                 excel_sheet['L' + str(excel_row)] = True
             else:
@@ -238,8 +266,13 @@ excel_workbook.close()
 # ********* Outtro
 if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
     os.remove(irfan_info_txt)
+os.system('color') # resets the background to black
+print()
 print('*****************************************')
-print('Done, please check the Excel file.')
+print()
+print('Done! Please check the Excel file.')
 print('Remember that the image info is only as good as the info from IrfanView...')
 print('so if authors "fudge" the image DPI then this program will be wrong!')
+print('The Excel file has two sheets, the first is the DPI list and the second is interactive.')
 print('hope this was helpful.')
+time.sleep(10)
