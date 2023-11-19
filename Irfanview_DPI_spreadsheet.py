@@ -8,6 +8,7 @@ import os
 import sys
 import datetime
 import time
+import requests
 from distutils.spawn import find_executable
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment
@@ -24,7 +25,18 @@ img_coef_page = 28.8  # this is the equivalent of a (8in x 10in @ 600DPI / 10000
 img_coef_page_min = 14.4  # this is the equivalent of a (8in x 10in @ 300DPI / 1000000) for a 1/1 page MIN
 
 # Version number
-script_ver_actual = '0.1.0'
+script_ver_actual = '0.1'
+
+# Terminal colors
+
+
+def pr_blue(skk):
+    print("\033[34m {}\033[00m" .format(skk))
+
+
+def pr_red(skk):
+    print("\033[91m {}\033[00m" .format(skk))
+
 
 # Filenames
 irfan_info_txt = 'DPI_list_irfanviewOUT.txt'
@@ -38,27 +50,26 @@ if not pic_dir:
     sys.exit('No folder selected, please run again')
 
 # ********** Intro
-os.system('color 1f') # sets the background to blue
 print()
-print('                 ******************************************************')
-print('                 *                    DAI ZWD-Redaktion               *')
-print('                 *                Irfanview DPI Spreadsheet           *')
-print('                 ******************************************************')
+pr_blue('                 ******************************************************')
+pr_blue('                 *                    DAI ZWD-Redaktion               *')
+pr_blue('                 *                Irfanview DPI Spreadsheet           *')
+pr_blue('                 ******************************************************')
 print()
-print('All the info for this program comes from IrfanView, if that data is wrong then everything else will be wrong')
-print('This is an executable, for the source code please look on GitHub for Irfanview_DPI_list')
-print('The program will take a while, please be patient...')
+pr_blue('All the info for this program comes from IrfanView, if that data is wrong then everything else will be wrong')
+pr_blue('This is an executable, for the source code please look on GitHub for Irfanview_DPI_list')
+pr_blue('The program will take a while, please be patient...')
 
-# Check version number
-script_ver_online = 'https://fabfab1.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
-script_ver_txt = 'DPI_list_ver.txt'
-get_version_number = f[powershell -Command "Invoke-WebRequest %_TagToolBatVerOnline% -OutFile script_ver_txt"]
-with open(os.devnull, 'w') as devnull:
-    subprocess.check_call(get_version_number, stderr=devnull)
-script_ver_ideal = readfiles(script_ver_txt)
-if not script_ver_actual == script_ver_ideal:
-    print('There is a new version of this program available, please download it from GitHub')
-    input('Or press ENTER to continue with this version for now')
+# ********** Check for updates
+# Get latest version from web
+url = 'https://fabfab1.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
+resp = requests.get(url)
+script_ver_ideal = resp.text
+
+# Compare versions
+if script_ver_actual != script_ver_ideal:
+    pr_red('A new version is available:'), print(script_ver_ideal)
+    input("Press Enter to continue, or update the program")
 
 # ********* Find and Run Irfanview
 irfan_prog_name = 'i_view64.exe'
@@ -266,13 +277,12 @@ excel_workbook.close()
 # ********* Outtro
 if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
     os.remove(irfan_info_txt)
-os.system('color') # resets the background to black
 print()
-print('*****************************************')
+pr_blue('*****************************************')
 print()
-print('Done! Please check the Excel file.')
-print('Remember that the image info is only as good as the info from IrfanView...')
-print('so if authors "fudge" the image DPI then this program will be wrong!')
-print('The Excel file has two sheets, the first is the DPI list and the second is interactive.')
-print('hope this was helpful.')
+pr_blue('Done! Please check the Excel file.')
+pr_blue('Remember that the image info is only as good as the info from IrfanView...')
+pr_blue('so if authors "fudge" the image DPI then this program will be wrong!')
+pr_blue('The Excel file has two sheets, the first is the DPI list and the second is interactive.')
+pr_blue('hope this was helpful.')
 time.sleep(10)
