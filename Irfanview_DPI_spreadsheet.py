@@ -79,6 +79,7 @@ if script_ver_actual != script_ver_ideal:
     pr_red('Press Enter to continue, or update the program')
     input()
 else:
+    print()
     pr_blue('Good, you have the latest version of the program.')
 
 # ********* Find and Run Irfanview
