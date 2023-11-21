@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <title>Image Quality Checker</title>
+    <style>
+    body {
+      background-color: #014495;
+      font-family: Arial;
+      color: white; 
+    }
+    
+    h1 {
+      text-align: center; 
+    }
+  </style>
+  </head>
+  <body>
+    <h1>Image Quality Checker</h1>
+    <div style="text-align: center;">F. Buccellati -- 21.11.23</div>
+    <h2>Introduction</h2>
+    <p>The Image Quality Checker is a program that analyzes a folder containing
+      images to determine if the resolution and dimensions of those images meets
+      the requirements for usage in print publications and materials. By
+      extracting technical metadata about each image and applying custom quality
+      assessment formulas, the program generates an Excel report specifying
+      which images pass or fail predefined quality criteria.</p>
+    <h2>Goals &amp; Usefulness</h2>
+    <p>Manually checking image resolutions and dimensions across a large set of
+      images can be an extremely tedious and time consuming process. This
+      automated tool eliminates the need to manually inspect and evaluate images
+      one-by-one. By extracting resolution specifications and vital technical
+      data using a robust CLI tool called IrfanView, and by leveraging the
+      analysis capabilities of Excel, this program can assess hundreds or
+      thousands of images almost instantly.</p>
+    <h2>Excel Structure</h2>
+    <p>The main output of the program is an Excel Workbook containing two sheets
+      - one sheet presents all of the raw technical data extracted from
+      IrfanView including dimensions, resolution, color space, EXIF information,
+      and more. The second "interactive" sheet contains distilled information
+      about each image pertaining to quality analysis, including file name,
+      horizontal and vertical DPI resolution, width and height of the image in
+      inches, and most importantly - a calculated Quality Coefficient.</p>
+    <h2>Use Cases</h2>
+    <p>This Image Quality Checker delivers value to anyone preparing images for
+      print publications and materials, such as photographers, graphic
+      designers, scientists and researchers, marketing creators, book
+      publishers, and more. Some examples of use cases are assessing images for
+      magazine ads, analyzing figures for journal article submissions,
+      evaluating photos for posters at academic conferences, or checking images
+      as part of the book publishing workflow.</p>
+    <h2>Quality Coefficient</h2>
+    <p>To determine whether an image is high enough resolution for the intended
+      use case, the program employs a Quality Coefficient formula to assign a
+      score to each image. This coefficient combines the key metrics of DPI and
+      dimensions into one numerical benchmark value that can be compared to
+      acceptability thresholds. While proprietary image quality assessment
+      algorithms do exist from companies like Adobe, this open Quality
+      Coefficient formula allows full control over the criteria used to define
+      what constitutes a "high quality" image on a customizable basis for each
+      desired use case.</p>
+    <h2>Program Structure</h2>
+    <p>On a technical level, the core workflow of the Image Quality Checker code
+      is: 1) Leverage the command line interface of IrfanView image viewer to
+      batch extract image metadata like resolution DPI and dimensions into a
+      temporary text file 2) Parse this text file using Python scripts to pull
+      out the data needed for analysis 3) Perform Quality Coefficient
+      calculations in Python on the dimensions and DPI numbers 3) Dynamically
+      generate an Excel report containing raw data and results of quality checks
+      based on custom thresholds using the openpyxl module in Python. The use of
+      CLI tools, scripting, and office document generation offers fast,
+      lightweight, portable automation for assessing image quality at scale.</p>
+  </body>
+</html>
