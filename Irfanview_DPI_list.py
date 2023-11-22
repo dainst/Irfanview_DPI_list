@@ -10,6 +10,7 @@ import sys
 import datetime
 import time
 import requests
+import colorama
 from distutils.spawn import find_executable
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment

@@ -15,12 +15,12 @@ IMPORTANT: Do NOT post this list to the issue-tracker. Use it as a basis for
             tracking down the missing module yourself. Thanks!
 
 missing module named pyimod02_importers - imported by C:\Users\fAB\PycharmProjects\Irfanview_DPI_list\venv\Lib\site-packages\PyInstaller\hooks\rthooks\pyi_rth_pkgutil.py (delayed), C:\Users\fAB\PycharmProjects\Irfanview_DPI_list\venv\Lib\site-packages\PyInstaller\hooks\rthooks\pyi_rth_pkgres.py (delayed)
-missing module named 'org.python' - imported by copy (optional), xml.sax (delayed, conditional)
-missing module named org - imported by pickle (optional)
+missing module named org - imported by copy (optional)
+missing module named 'org.python' - imported by pickle (optional), xml.sax (delayed, conditional)
 missing module named typing_extensions - imported by urllib3._collections (conditional), setuptools.config._validate_pyproject.formats (conditional), setuptools.command.build (conditional), packaging.metadata (conditional, optional)
-missing module named pwd - imported by posixpath (delayed, conditional, optional), pathlib (delayed, optional), shutil (delayed, optional), tarfile (optional), subprocess (delayed, conditional, optional), netrc (delayed, conditional), getpass (delayed), distutils.util (delayed, conditional, optional), distutils.archive_util (optional), http.server (delayed, optional), webbrowser (delayed), setuptools._distutils.util (delayed, conditional, optional), setuptools._distutils.archive_util (optional)
-missing module named grp - imported by pathlib (delayed, optional), shutil (delayed, optional), tarfile (optional), subprocess (delayed, conditional, optional), distutils.archive_util (optional), setuptools._distutils.archive_util (optional)
-missing module named posix - imported by os (conditional, optional), posixpath (optional), importlib._bootstrap_external (conditional), shutil (conditional)
+missing module named pwd - imported by posixpath (delayed, conditional, optional), shutil (delayed, optional), tarfile (optional), pathlib (delayed, optional), subprocess (delayed, conditional, optional), netrc (delayed, conditional), getpass (delayed), distutils.util (delayed, conditional, optional), distutils.archive_util (optional), http.server (delayed, optional), webbrowser (delayed), setuptools._distutils.util (delayed, conditional, optional), setuptools._distutils.archive_util (optional)
+missing module named grp - imported by shutil (delayed, optional), tarfile (optional), pathlib (delayed, optional), subprocess (delayed, conditional, optional), distutils.archive_util (optional), setuptools._distutils.archive_util (optional)
+missing module named posix - imported by os (conditional, optional), posixpath (optional), shutil (conditional), importlib._bootstrap_external (conditional)
 missing module named resource - imported by posix (top-level)
 missing module named _manylinux - imported by packaging._manylinux (delayed, optional), setuptools._vendor.packaging._manylinux (delayed, optional), pkg_resources._vendor.packaging._manylinux (delayed, optional)
 missing module named jnius - imported by pkg_resources._vendor.platformdirs.android (delayed, optional)
