@@ -28,14 +28,8 @@ img_coef_page_min = 7.2  # this is the equivalent of a (8in x 10in @ 300DPI / 10
 
 # Terminal colors
 
-
-def pr_blue(skk):
-    print("\033[34m {}\033[00m" .format(skk))
-
-
-def pr_red(skk):
-    print("\033[91m {}\033[00m" .format(skk))
-
+colorama.init()
+print(colorama.ansi.clear_screen())
 
 # Filenames
 irfan_info_txt = 'DPI_list_irfanviewOUT.txt'
@@ -50,14 +44,14 @@ if not pic_dir:
 
 # ********** Intro
 print()
-pr_blue('                 ******************************************************')
-pr_blue('                 *                    DAI ZWD-Redaktion               *')
-pr_blue('                 *                Irfanview DPI Spreadsheet           *')
-pr_blue('                 ******************************************************')
+print(colorama.Fore.BLUE + '                 ******************************************************')
+print(colorama.Fore.BLUE + '                 *                    DAI ZWD-Redaktion               *')
+print(colorama.Fore.BLUE + '                 *                Irfanview DPI Spreadsheet           *')
+print(colorama.Fore.BLUE + '                 ******************************************************')
 print()
-pr_blue('All the info for this program comes from IrfanView, if that data is wrong then everything else will be wrong')
-pr_blue('This is an executable, for the source code please look on GitHub for Irfanview_DPI_list')
-pr_blue('The program will take a while, please be patient...')
+print(colorama.Fore.BLUE + 'All the info for this program comes from IrfanView')
+print(colorama.Fore.BLUE + 'This is an executable, for the source code please look on GitHub for Irfanview_DPI_list')
+print(colorama.Fore.BLUE + 'The program will take a while, please be patient...')
 
 # ********** Check for updates
 # Get latest version from web
@@ -66,9 +60,9 @@ try:
     resp = requests.get(url)
     resp.raise_for_status()
 except requests.exceptions.RequestException as e:
-    pr_red('Warning: Could not get latest version')
+    print(colorama.Fore.RED + 'Warning: Could not get latest version')
     print(e)
-    pr_red('Press Enter to continue without checking version')
+    print(colorama.Fore.RED + 'Press Enter to continue without checking version')
     input()
 
 script_ver_ideal = resp.text
@@ -76,12 +70,12 @@ script_ver_actual = __version__
 
 if script_ver_actual != script_ver_ideal:
     ver_text_print = 'You have version ' + script_ver_actual + ' and the latest version is ' + script_ver_ideal
-    pr_red(ver_text_print)
-    pr_red('Press Enter to continue, or update the program')
+    print(colorama.Fore.RED + ver_text_print)
+    print(colorama.Fore.RED + 'Press Enter to continue, or update the program')
     input()
 else:
     print()
-    pr_blue('Good, you have the latest version of the program.')
+    print(colorama.Fore.BLUE + 'Good, you have the latest version of the program.')
 
 # ********* Find and Run Irfanview
 irfan_prog_name = 'i_view64.exe'
@@ -299,13 +293,13 @@ excel_workbook.close()
 if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
     os.remove(irfan_info_txt)
 print()
-pr_blue('*****************************************')
+print(colorama.Fore.BLUE + '*****************************************')
 print()
-pr_blue('Done! Please check the Excel file.')
-pr_blue('Remember that the image info is only as good as the info from IrfanView...')
-pr_blue('so if authors "fudge" the image DPI then this program will be wrong!')
-pr_blue('The Excel file has two sheets, the first is the DPI list and the second is interactive.')
-pr_blue('hope this was helpful.')
+print(colorama.Fore.BLUE + 'Done! Please check the Excel file.')
+print(colorama.Fore.BLUE + 'Remember that the image info is only as good as the info from IrfanView...')
+print(colorama.Fore.BLUE + 'so if authors "fudge" the image DPI then this program will be wrong!')
+print(colorama.Fore.BLUE + 'The Excel file has two sheets, the first is the DPI list and the second is interactive.')
+print(colorama.Fore.BLUE + 'hope this was helpful.')
 time.sleep(10)
 
 # note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
