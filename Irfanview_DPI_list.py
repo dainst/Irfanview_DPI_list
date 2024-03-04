@@ -473,3 +473,5 @@ time.sleep(5)
 # TODO for Reihenmodel - 1 col, full width, full height (90)
 # TODO      also, what is max width at 300DPI and max width at 600DPI
 # TODO      also interactive column giving width
+
+# TODO Reihen 7.7cm column X, 2 columns 15.4 x2 + 0.5cm gutter, 23.5cm vbild
