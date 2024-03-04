@@ -93,12 +93,16 @@ else:
 irfan_prog_name = 'i_view64.exe'
 irfan_prog_cmd = find_executable(irfan_prog_name)
 if not irfan_prog_cmd:
+    irfan_prog_cmd = '\\Program Files\\IrfanView\\i_view64.exe'
+if not irfan_prog_cmd:
     irfan_prog_cmd = (os.path.expanduser('~')) + '\\PortableApps\\IrfanViewPortable\\App\\IrfanView64\\i_view64.exe'
 if not irfan_prog_cmd:
     irfan_prog_name = 'i_view32.exe'
     irfan_prog_cmd = find_executable(irfan_prog_name)
 if not irfan_prog_cmd:
     irfan_prog_cmd = (os.path.expanduser('~')) + '\\PortableApps\\IrfanViewPortable\\App\\IrfanView\\i_view32.exe'
+if not irfan_prog_cmd:
+    irfan_prog_cmd = 'Program Files (x86)\\IrfanView\\i_view32.exe'
 if not irfan_prog_cmd:
     sys.exit('Irfanview not installed, please install and run again')
 
