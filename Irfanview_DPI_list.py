@@ -463,9 +463,9 @@ print(colorama.Fore.BLUE + '*****************************************')
 print()
 print(colorama.Fore.BLUE + 'Done! Please check the Excel file.')
 print(colorama.Fore.BLUE + 'Remember that the image info is only as good as the info from IrfanView...')
-print(colorama.Fore.BLUE + 'so if authors "fudge" the image DPI then this program will be wrong!')
-print(colorama.Fore.BLUE + 'The Excel file has two sheets, the first is the DPI list and the second is interactive.')
+# TODO print(colorama.Fore.BLUE + 'so if authors "fudge" the image DPI then this program will be wrong!')
+# TODO print(colorama.Fore.BLUE + 'The Excel file has two sheets, the first is the DPI list and the second is interactive.')
 print(colorama.Fore.BLUE + 'hope this was helpful.')
-time.sleep(10)
+time.sleep(5)
 
-# note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
+# TODO note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
