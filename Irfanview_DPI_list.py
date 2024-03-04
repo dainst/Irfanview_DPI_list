@@ -475,3 +475,5 @@ time.sleep(5)
 # TODO      also interactive column giving width
 
 # TODO Reihen 7.7cm column X, 2 columns 15.4 x2 + 0.5cm gutter, 23.5cm vbild
+
+# TODO Bitmap do DPI
