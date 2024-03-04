@@ -33,7 +33,6 @@ print(colorama.ansi.clear_screen())
 
 # Filenames
 irfan_info_txt = 'DPI_list_irfanviewOUT.txt'
-excel_filename = '^DPI_list.xlsx'
 
 root = tk.Tk()
 root.withdraw()
@@ -110,7 +109,12 @@ if not irfan_prog_cmd:
 irfan_info_txt = os.path.join(pic_dir, irfan_info_txt)
 if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
     os.remove(irfan_info_txt)
+
+# Generate Excel Filename
+last_pic_dir_name = os.path.basename(os.path.normpath(pic_dir))
+excel_filename = '^' + last_pic_dir_name + '_DPI-list.xlsx'
 excel_filename = os.path.join(pic_dir, excel_filename)
+
 try:
     if os.path.exists(excel_filename):  # Delete Excel file if it exists
         os.remove(excel_filename)
@@ -118,7 +122,7 @@ except PermissionError:
     print("\n ******** Excel File Open! Please close it and run again.")
     time.sleep(10)
     sys.exit()
-irfan_prog_cmd = irfan_prog_cmd + ' ' + '"' + pic_dir + '*.*' + '"' + ' /info=' + '"' + irfan_info_txt + '"'
+irfan_prog_cmd = irfan_prog_cmd + ' ' + '"' + pic_dir + '*.*' + '"' + ' /silent /info=' + '"' + irfan_info_txt + '"'
 with open(os.devnull, 'w') as devnull:
     subprocess.check_call(irfan_prog_cmd, stderr=devnull)
 
