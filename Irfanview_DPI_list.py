@@ -465,7 +465,11 @@ print(colorama.Fore.BLUE + 'Done! Please check the Excel file.')
 print(colorama.Fore.BLUE + 'Remember that the image info is only as good as the info from IrfanView...')
 # TODO print(colorama.Fore.BLUE + 'so if authors "fudge" the image DPI then this program will be wrong!')
 # TODO print(colorama.Fore.BLUE + 'The Excel file has two sheets, the first is the DPI list and the second is interactive.')
-print(colorama.Fore.BLUE + 'hope this was helpful.')
+print(colorama.Fore.BLUE + 'hope this was helpful!')
 time.sleep(5)
 
 # TODO note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
+
+# TODO for Reihenmodel - 1 col, full width, full height (90)
+# TODO      also, what is max width at 300DPI and max width at 600DPI
+# TODO      also interactive column giving width
