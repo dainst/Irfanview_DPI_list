@@ -78,19 +78,28 @@ else:
     print(colorama.Fore.BLUE + 'Good, you have the latest version of the program.')
 
 # ********* Find and Run Irfanview
+def check_irfan_exists(irfan_prog_cmd):
+    if not os.path.isfile(irfan_prog_cmd):
+        irfan_prog_cmd = None
+    return irfan_prog_cmd
+
 irfan_prog_name = 'i_view64.exe'
 irfan_prog_cmd = find_executable(irfan_prog_name)
 if not irfan_prog_cmd:
     irfan_prog_cmd = '\\Program Files\\IrfanView\\i_view64.exe'
+    irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
 if not irfan_prog_cmd:
     irfan_prog_cmd = (os.path.expanduser('~')) + '\\PortableApps\\IrfanViewPortable\\App\\IrfanView64\\i_view64.exe'
+    irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
 if not irfan_prog_cmd:
     irfan_prog_name = 'i_view32.exe'
     irfan_prog_cmd = find_executable(irfan_prog_name)
 if not irfan_prog_cmd:
     irfan_prog_cmd = (os.path.expanduser('~')) + '\\PortableApps\\IrfanViewPortable\\App\\IrfanView\\i_view32.exe'
+    irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
 if not irfan_prog_cmd:
     irfan_prog_cmd = 'Program Files (x86)\\IrfanView\\i_view32.exe'
+    irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
 if not irfan_prog_cmd:
     sys.exit('Irfanview not installed, please install and run again')
 
@@ -277,6 +286,8 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                 reihen_sheet['B' + str(excel_row)] = zschriften_sheet['B' + str(excel_row)] = interactive_sheet['B' + str(excel_row)] = "BITMAP FILE"
                 reihen_sheet['B' + str(excel_row)].fill = zschriften_sheet['B' + str(excel_row)].fill = interactive_sheet['B' + str(excel_row)].fill = grey_fill
 
+# ********* Calculate DPI for different print sizes
+
 # SETUP DPI TARGETS AND MATH
 
         ideal_targ_DPI = 800
@@ -408,6 +419,8 @@ excel_row = excel_row + 1
 zschriften_sheet['A' + str(excel_row)] = reihen_sheet['A' + str(excel_row)] = interactive_sheet['A' + str(excel_row)] = "Total Images: " + str(numb_images)
 zschriften_sheet['A' + str(excel_row)].font = reihen_sheet['A' + str(excel_row)].font = interactive_sheet['A' + str(excel_row)].font = bold_font
 
+# ********* Format Excel Sheet
+
 # Set column widths and alignment
 def adjust_column_width(worksheet):
     for column in worksheet.columns:
@@ -442,6 +455,7 @@ excel_workbook.save(filename=excel_filename)
 excel_workbook.close()
 
 # ********* Outtro
+
 if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
     os.remove(irfan_info_txt)
 print()
