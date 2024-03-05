@@ -453,3 +453,5 @@ time.sleep(5)
 
 # TODO note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
 # TODO Bitmap do DPI
+#      Strichzeichnungen in Bitmap-Formaten (*.bmp, häufig genutzt für
+#      nicht vektorisierte Schwarzweiß-Strichzeichnungen) mind. 1200 dpi, besser 1600dpi
