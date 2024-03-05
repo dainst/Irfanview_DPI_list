@@ -19,13 +19,6 @@ from openpyxl.formatting.rule import FormulaRule
 import tkinter as tk
 from tkinter import filedialog
 
-# ********** General Variables
-
-# generate IDEAL and MIN Image Coefficient
-# Formula: Image Quality Coefficient = ((Image width in inches * DPI) * (Image height in inches * DPI)) / 1,000,000
-img_coef_page = 28.8  # this is the equivalent of a (8in x 10in @ 600DPI / 1000000) for a 1/1 page IDEAL
-img_coef_page_min = 7.2  # this is the equivalent of a (8in x 10in @ 300DPI / 1000000) for a 1/1 page MIN
-
 # Terminal colors
 
 colorama.init()
@@ -76,11 +69,9 @@ except requests.exceptions.RequestException as e:
     print(colorama.Fore.RED + 'Press Enter to continue without checking version')
     input()
 
-script_ver_ideal = resp.text
-script_ver_actual = __version__
 
-if script_ver_actual != script_ver_ideal:
-    ver_text_print = 'You have version ' + script_ver_actual + ' and the latest version is ' + script_ver_ideal
+if __version__ != resp.text:
+    ver_text_print = 'You have version ' + __version__ + ' and the latest version is ' + resp.text
     print(colorama.Fore.RED + ver_text_print)
     print(colorama.Fore.RED + 'Press Enter to continue, or update the program')
     input()
@@ -131,12 +122,13 @@ with open(os.devnull, 'w') as devnull:
 # Setup Excel file
 excel_workbook = Workbook()
 excel_workbook.remove(excel_workbook['Sheet'])   # Remove default sheet
-excel_sheet = excel_workbook.create_sheet("DPI list")
-interactive_sheet = excel_workbook.create_sheet("Interactive")
-spalten_sheet = excel_workbook.create_sheet("DAI-Zeitschrift Spalten")
+spalten_sheet = excel_workbook.create_sheet("DAI-Zeitschriften")
+reihen_sheet = excel_workbook.create_sheet("DAI-Reihen")
+interactive_sheet = excel_workbook.create_sheet("Max+Interactive")
+
 
 # Setup Headers
-header_to_col = {
+header_to_col_R = {
     'File name': 'A',
     'IMG Type & Compression': 'B',
     'Resolution': 'C',
@@ -151,7 +143,7 @@ header_to_col = {
     'Beilage 2.5x': 'L'
 }
 
-header_to_col2 = {
+header_to_col_I = {
     'File name': 'A',
     'DPI': 'B',
     'Width CM': 'C',
@@ -159,7 +151,7 @@ header_to_col2 = {
     'Quality Coefficient': 'E',
     'Quality Enough?': 'F',
 }
-header_to_col3 = {
+header_to_col_Z = {
     'File name': 'A',
     'IMG Type & Compression': 'B',
     'Resolution': 'C',
@@ -177,22 +169,22 @@ header_to_col3 = {
 }
 
 # Write Headers for Excel DPI list sheet
-excel_sheet["A1"] = 'DPI List -- Data from IrfanView -- ' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+reihen_sheet["A1"] = 'DPI List -- Data from IrfanView -- ' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 excel_row = 4
-for header in header_to_col:
-    col = header_to_col[header]
-    excel_sheet[f'{col}{excel_row}'] = header
+for header in header_to_col_R:
+    col = header_to_col_R[header]
+    reihen_sheet[f'{col}{excel_row}'] = header
 
 # Write Headers for Excel Interactive sheet
 interactive_sheet["A1"] = 'DPI List -- Data from IrfanView -- ' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-for header in header_to_col2:
-    col = header_to_col2[header]
+for header in header_to_col_I:
+    col = header_to_col_I[header]
     interactive_sheet[f'{col}{excel_row}'] = header
 
 # Write Headers for Excel Spalten sheet
 spalten_sheet["A1"] = 'DPI List -- Data from IrfanView -- ' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-for header in header_to_col3:
-    col = header_to_col3[header]
+for header in header_to_col_Z:
+    col = header_to_col_Z[header]
     spalten_sheet[f'{col}{excel_row}'] = header
 for col in range(1, 15):  # 1-14 corresponds to columns A-N
     spalten_sheet.cell(row=4, column=col).font = italic_font
@@ -215,22 +207,22 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
         img_info = img_info.strip()
 
         if img_header == 'File name':
-            excel_sheet['A' + str(excel_row)] = img_info
+            reihen_sheet['A' + str(excel_row)] = img_info
             interactive_sheet['A' + str(excel_row)] = img_info
             spalten_sheet['A' + str(excel_row)] = img_info
             numb_images = numb_images + 1
 
         if img_header == 'Directory':
-            excel_sheet['A2'] = img_info[:-1]
+            reihen_sheet['A2'] = img_info[:-1]
             interactive_sheet['A2'] = img_info[:-1]
             spalten_sheet['A2'] = img_info[:-1]
 
         if img_header == 'Compression':
-            excel_sheet['B' + str(excel_row)] = img_info
+            reihen_sheet['B' + str(excel_row)] = img_info
             spalten_sheet['B' + str(excel_row)] = img_info
 
         if img_header == 'Resolution':
-            excel_sheet['C' + str(excel_row)] = img_info
+            reihen_sheet['C' + str(excel_row)] = img_info
             spalten_sheet['C' + str(excel_row)] = img_info
             img_info = img_info.split(' DPI')[0]
             img_DPI_x, img_DPI_y = img_info.split(' x ')
@@ -238,9 +230,9 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
             img_DPI_y = int(img_DPI_y)
             interactive_sheet['B' + str(excel_row)] = img_DPI_x
             if not img_DPI_x == img_DPI_y:
-                excel_sheet['C' + str(excel_row)].fill = red_fill
+                reihen_sheet['C' + str(excel_row)].fill = red_fill
             if img_info in ['0 x 0', '96 x 96']:
-                excel_sheet['A' + str(excel_row)].fill = grey_fill
+                reihen_sheet['A' + str(excel_row)].fill = grey_fill
                 interactive_sheet['A' + str(excel_row)].fill = grey_fill
                 spalten_sheet['A' + str(excel_row)].fill = grey_fill
                 numb_images = numb_images - 1
@@ -250,13 +242,13 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
         if img_header == 'Image dimensions':
             img_pix = img_info.split('  Pixels')[0]
             img_pix_x, img_pix_y = map(int, img_pix.split(' x '))
-            excel_sheet['D' + str(excel_row)] = img_pix.strip()
+            reihen_sheet['D' + str(excel_row)] = img_pix.strip()
             spalten_sheet['D' + str(excel_row)] = img_pix.strip()
 
         if img_header == 'Print size':
             img_cm, img_in = img_info.split('; ')
-            excel_sheet['F' + str(excel_row)], spalten_sheet['F' + str(excel_row)] = img_cm, img_cm
-            excel_sheet['G' + str(excel_row)], spalten_sheet['G' + str(excel_row)] = img_in, img_in
+            reihen_sheet['F' + str(excel_row)], spalten_sheet['F' + str(excel_row)] = img_cm, img_cm
+            reihen_sheet['G' + str(excel_row)], spalten_sheet['G' + str(excel_row)] = img_in, img_in
             img_in = img_in.split(' inches')[0]
             img_in_x, img_in_y = img_in.split(' x ')
             img_in_x = float(img_in_x)
@@ -273,10 +265,10 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
         if img_header == 'Color depth':
             color_depth = float(img_info.split()[0].replace(',', '.'))
             if color_depth < 3:
-                excel_sheet['B' + str(excel_row)] = spalten_sheet['B' + str(excel_row)] = "BITMAP FILE"
-                excel_sheet['B' + str(excel_row)].fill = spalten_sheet['B' + str(excel_row)].fill = grey_fill
+                reihen_sheet['B' + str(excel_row)] = spalten_sheet['B' + str(excel_row)] = "BITMAP FILE"
+                reihen_sheet['B' + str(excel_row)].fill = spalten_sheet['B' + str(excel_row)].fill = grey_fill
 
-            excel_sheet['E' + str(excel_row)] = img_orient
+            reihen_sheet['E' + str(excel_row)] = img_orient
             spalten_sheet['E' + str(excel_row)] = img_orient
             img_coef = (((float(img_in_x) * float(img_DPI_x)) * (float(img_in_y) * float(img_DPI_x)))/1000000)
             interactive_sheet['E' + str(excel_row)] = img_coef
@@ -290,44 +282,44 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
             # EXCEL SHEET
 
             # WEB Page
-            excel_sheet['H3'] = (0.10 * img_coef_page)
+            reihen_sheet['H3'] = (0.10 * img_coef_page)
             if img_coef >= (0.10 * img_coef_page):
-                excel_sheet['H' + str(excel_row)] = True
+                reihen_sheet['H' + str(excel_row)] = True
             else:
-                excel_sheet['H' + str(excel_row)] = False
-                excel_sheet['H' + str(excel_row)].fill = red_fill
+                reihen_sheet['H' + str(excel_row)] = False
+                reihen_sheet['H' + str(excel_row)].fill = red_fill
 
             # 1/4 Page
-            excel_sheet['I3'] = (0.25 * img_coef_page)
+            reihen_sheet['I3'] = (0.25 * img_coef_page)
             if img_coef >= (0.25 * img_coef_page):
-                excel_sheet['I' + str(excel_row)] = True
+                reihen_sheet['I' + str(excel_row)] = True
             else:
-                excel_sheet['I' + str(excel_row)] = False
-                excel_sheet['I' + str(excel_row)].fill = red_fill
+                reihen_sheet['I' + str(excel_row)] = False
+                reihen_sheet['I' + str(excel_row)].fill = red_fill
 
             # 1/2 Page
-            excel_sheet['J3'] = (0.50 * img_coef_page)
+            reihen_sheet['J3'] = (0.50 * img_coef_page)
             if img_coef >= (0.50 * img_coef_page):
-                excel_sheet['J' + str(excel_row)] = True
+                reihen_sheet['J' + str(excel_row)] = True
             else:
-                excel_sheet['J' + str(excel_row)] = False
-                excel_sheet['J' + str(excel_row)].fill = red_fill
+                reihen_sheet['J' + str(excel_row)] = False
+                reihen_sheet['J' + str(excel_row)].fill = red_fill
 
             # 1/1 Page
-            excel_sheet['k3'] = (1.0 * img_coef_page)
+            reihen_sheet['k3'] = (1.0 * img_coef_page)
             if img_coef >= (1.0 * img_coef_page):
-                excel_sheet['K' + str(excel_row)] = True
+                reihen_sheet['K' + str(excel_row)] = True
             else:
-                excel_sheet['K' + str(excel_row)] = False
-                excel_sheet['K' + str(excel_row)].fill = red_fill
+                reihen_sheet['K' + str(excel_row)] = False
+                reihen_sheet['K' + str(excel_row)].fill = red_fill
 
             # Beilage Page
-            excel_sheet['L3'] = (2.50 * img_coef_page)
+            reihen_sheet['L3'] = (2.50 * img_coef_page)
             if img_coef >= (2.5 * img_coef_page):
-                excel_sheet['L' + str(excel_row)] = True
+                reihen_sheet['L' + str(excel_row)] = True
             else:
-                excel_sheet['L' + str(excel_row)] = False
-                excel_sheet['L' + str(excel_row)].fill = red_fill
+                reihen_sheet['L' + str(excel_row)] = False
+                reihen_sheet['L' + str(excel_row)].fill = red_fill
 
             # SPALTEN SHEET
 
@@ -396,11 +388,11 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
 # Comments to the Excel sheet
 comment = """This is the minimum quality @600 DPI for this print size. It was generated using this formula: 
 Image Quality Coefficient = ((Image width in inches * DPI) * (Image height in inches * DPI)) / 1,000,000"""
-excel_sheet['H3'].comment = Comment(comment, 'FAB')
-excel_sheet['I3'].comment = Comment(comment, 'FAB')
-excel_sheet['J3'].comment = Comment(comment, 'FAB')
-excel_sheet['K3'].comment = Comment(comment, 'FAB')
-excel_sheet['L3'].comment = Comment(comment, 'FAB')
+reihen_sheet['H3'].comment = Comment(comment, 'FAB')
+reihen_sheet['I3'].comment = Comment(comment, 'FAB')
+reihen_sheet['J3'].comment = Comment(comment, 'FAB')
+reihen_sheet['K3'].comment = Comment(comment, 'FAB')
+reihen_sheet['L3'].comment = Comment(comment, 'FAB')
 
 # Calculate the number of images
 excel_row = excel_row + 1
@@ -428,11 +420,11 @@ def adjust_column_width(worksheet):
         adjusted_width = (max_length + 2)
         worksheet.column_dimensions[column[0].column_letter].width = adjusted_width
 
-adjust_column_width(excel_sheet)
+adjust_column_width(reihen_sheet)
 adjust_column_width(interactive_sheet)
 adjust_column_width(spalten_sheet)
 
-excel_sheet.column_dimensions['A'].width, excel_sheet.column_dimensions['B'].width = 21, 21
+reihen_sheet.column_dimensions['A'].width, reihen_sheet.column_dimensions['B'].width = 21, 21
 interactive_sheet.column_dimensions['A'].width, interactive_sheet.column_dimensions['B'].width = 21, 21
 spalten_sheet.column_dimensions['A'].width, spalten_sheet.column_dimensions['B'].width = 21, 21
 spalten_sheet.merge_cells('H3:N3')
