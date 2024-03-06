@@ -469,3 +469,4 @@ time.sleep(5)
 # TODO Bitmap do DPI
 #      Strichzeichnungen in Bitmap-Formaten (*.bmp, häufig genutzt für
 #      nicht vektorisierte Schwarzweiß-Strichzeichnungen) mind. 1200 dpi, besser 1600dpi
+#      Beilagen give sizes in CM and give which DIN A size they are
