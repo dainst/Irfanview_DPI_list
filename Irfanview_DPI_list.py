@@ -179,8 +179,8 @@ header_to_col_I = {
     'Max @ 400DPI': 'H',
     'Max @ 800DPI': 'I',
     '': 'J',
-    'INPUT cm': 'K',
-    'DPI @ cm': 'L',
+    'Goal cm': 'K',
+    'DPI result': 'L',
 }
 
 # Write Headers for Excel DPI list sheet
@@ -323,8 +323,8 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                         curr_sheet[curr_column + str(excel_row)].fill = yellow_fill
             
             def calculate_max_widths(img_pix_x):
-                min_targ_DPI_width = round(img_pix_x * min_targ_DPI)
-                ideal_targ_DPI_width = round(img_pix_x * ideal_targ_DPI)
+                min_targ_DPI_width = round(((img_pix_x / min_targ_DPI) * 2.54), 1)
+                ideal_targ_DPI_width = round(((img_pix_x / ideal_targ_DPI) * 2.54), 1)
                 return min_targ_DPI_width, ideal_targ_DPI_width
 
 # ZEITSCHRIFTEN SHEET
@@ -468,11 +468,22 @@ adjust_column_width(zschriften_sheet)
 reihen_sheet.column_dimensions['A'].width, reihen_sheet.column_dimensions['B'].width = 21, 21
 interactive_sheet.column_dimensions['A'].width, interactive_sheet.column_dimensions['B'].width = 21, 21
 zschriften_sheet.column_dimensions['A'].width, zschriften_sheet.column_dimensions['B'].width = 21, 21
+
 zschriften_sheet.merge_cells('H3:N3')
 zschriften_sheet['H3'] = f"For fotos: under {min_targ_DPI} DPI red, {min_targ_DPI}-{ideal_targ_DPI} DPI yellow. Bitmap: under {min_targ_DPI_bit} DPI red, {min_targ_DPI_bit}-{ideal_targ_DPI_bit} DPI yellow."
 zschriften_sheet['H3'].font = bold_font
 zschriften_sheet['H3'].alignment = Alignment(horizontal='center')
+
+interactive_sheet.merge_cells('H3:I3')
+interactive_sheet['H3'] = "Max widths in cm"
+interactive_sheet['H3'].alignment = Alignment(horizontal='center')
 interactive_sheet.column_dimensions['F'].alignment = Alignment(horizontal='center')
+interactive_sheet.column_dimensions['L'].alignment = Alignment(horizontal='center')
+
+interactive_sheet['K3'] = "INPUT"
+interactive_sheet['L3'] = "OUTPUT"
+interactive_sheet['K3'].alignment = interactive_sheet['L3'].alignment = Alignment(horizontal='center')
+
 
 # After creating all the sheets and before saving the workbook
 excel_workbook.active = zschriften_sheet
