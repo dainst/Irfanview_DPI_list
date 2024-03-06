@@ -227,16 +227,19 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
             reihen_sheet['A' + str(excel_row)] = img_info
             interactive_sheet['A' + str(excel_row)] = img_info
             numb_images = numb_images + 1
+            continue
 
         if img_header == 'Directory':
             zschriften_sheet['A2'] = img_info[:-1]
             reihen_sheet['A2'] = img_info[:-1]
             interactive_sheet['A2'] = img_info[:-1]
+            continue
 
         if img_header == 'Compression':
             zschriften_sheet['B' + str(excel_row)] = img_info
             reihen_sheet['B' + str(excel_row)] = img_info
             interactive_sheet['B' + str(excel_row)] = img_info
+            continue
 
         if img_header == 'Resolution':
             zschriften_sheet['C' + str(excel_row)] = img_info
@@ -255,6 +258,7 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                 numb_images = numb_images - 1
                 img_info = img_header = img_pix = img_pix_x = img_pix_y = img_DPI_x = img_DPI_y = img_orient = img_landscape = img_coef = 0
                 continue
+            continue
 
         if img_header == 'Image dimensions':
             img_pix = img_info.split('  Pixels')[0]
@@ -262,6 +266,7 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
             zschriften_sheet['D' + str(excel_row)] = img_pix.strip()
             reihen_sheet['D' + str(excel_row)] = img_pix.strip()
             interactive_sheet['D' + str(excel_row)] = img_pix.strip()
+            continue
 
         if img_header == 'Print size':
             img_cm, img_in = img_info.split('; ')
@@ -278,6 +283,7 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                 img_orient = 'Portrait'
                 img_landscape = False
             zschriften_sheet['E' + str(excel_row)] = reihen_sheet['E' + str(excel_row)] = interactive_sheet['E' + str(excel_row)] = img_orient
+            continue
 
         if img_header == 'Color depth':
             color_depth = float(img_info.split()[0].replace(',', '.'))
@@ -285,134 +291,154 @@ with open(irfan_info_txt, encoding='utf-16-le') as irfan_info_data:
                 img_bitmap = True
                 reihen_sheet['B' + str(excel_row)] = zschriften_sheet['B' + str(excel_row)] = interactive_sheet['B' + str(excel_row)] = "BITMAP FILE"
                 reihen_sheet['B' + str(excel_row)].fill = zschriften_sheet['B' + str(excel_row)].fill = interactive_sheet['B' + str(excel_row)].fill = grey_fill
+            else:
+                img_bitmap = False
+            continue
 
-# ********* Calculate DPI for different print sizes
+# ********* Calculate DPI for different print sizes. File date/time used bc last header
+        if img_header == 'File date/time':
 
 # SETUP DPI TARGETS AND MATH
 
-        ideal_targ_DPI = 800
-        min_targ_DPI = 400
-        def calculate_dpi_newx(img_pix_x, new_x_cm):
-            new_width_in = new_x_cm / 2.54  # convert cm to inches
-            img_DPI_x_spalten = round(img_pix_x / new_width_in)
-            return img_DPI_x_spalten
+            ideal_targ_DPI = 800
+            min_targ_DPI = 400
+            ideal_targ_DPI_bit = 1600
+            min_targ_DPI_bit = 1200
 
-        def calculate_max_widths(img_pix_x):
-            min_targ_DPI_width = round(img_pix_x * min_targ_DPI)
-            ideal_targ_DPI_width = round(img_pix_x * ideal_targ_DPI)
-            return min_targ_DPI_width, ideal_targ_DPI_width
+            def calculate_dpi_newx(img_pix_x, new_x_cm):
+                new_width_in = new_x_cm / 2.54  # convert cm to inches
+                result_DPI_fnct = round(img_pix_x / new_width_in)
+                return result_DPI_fnct
 
-        def set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column):
-            if result_DPI < min_targ_DPI:
-                zschriften_sheet[curr_column + str(excel_row)].fill = red_fill
-            elif min_targ_DPI <= result_DPI < ideal_targ_DPI:
-                zschriften_sheet[curr_column + str(excel_row)].fill = yellow_fill
+            def set_fill_color(result_DPI, excel_row, curr_column, curr_sheet):
+                if img_bitmap == False:
+                    if result_DPI < min_targ_DPI:
+                        curr_sheet[curr_column + str(excel_row)].fill = red_fill
+                    elif min_targ_DPI <= result_DPI < ideal_targ_DPI:
+                        curr_sheet[curr_column + str(excel_row)].fill = yellow_fill
+                elif img_bitmap == True:
+                    if result_DPI < min_targ_DPI_bit:
+                        curr_sheet[curr_column + str(excel_row)].fill = red_fill
+                    elif min_targ_DPI_bit <= result_DPI < ideal_targ_DPI_bit:
+                        curr_sheet[curr_column + str(excel_row)].fill = yellow_fill
+            
+            def calculate_max_widths(img_pix_x):
+                min_targ_DPI_width = round(img_pix_x * min_targ_DPI)
+                ideal_targ_DPI_width = round(img_pix_x * ideal_targ_DPI)
+                return min_targ_DPI_width, ideal_targ_DPI_width
 
 # ZEITSCHRIFTEN SHEET
+
+            curr_sheet = zschriften_sheet
 
             # 2 Spalten 4.03cm
             new_x_cm = 4.03
             curr_column = 'H'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['H' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # 3 Spalten 6.28cm
             new_x_cm = 6.28
             curr_column = 'I'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['I' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # 4 Spalten 8.52cm
             new_x_cm = 8.52
             curr_column = 'J'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['J' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # 5 Spalten 10.76cm
             new_x_cm = 10.76
             curr_column = 'K'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['K' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # 6 Spalten 13cm
             new_x_cm = 13
             curr_column = 'L'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['L' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # 8 Spalten 17.5cm
             new_x_cm = 17.5
             curr_column = 'M'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['M' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # Volle Seite 25.17cm
             new_x_cm = 25.17
             curr_column = 'N'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['N' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, zschriften_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
 # REIHEN SHEET
+
+            curr_sheet = reihen_sheet
 
             # A4 1 Sp. 7.75cm
             new_x_cm = 7.75
             curr_column = 'H'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['H' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, reihen_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # A4 2 Sp. 15.55cm
             new_x_cm = 15.55
             curr_column = 'I'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['I' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, reihen_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # A4 hoch 23.81cm
             new_x_cm = 23.81
             curr_column = 'J'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['J' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, reihen_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # Üformat 1 Sp. 8.775cm
             new_x_cm = 8.775
             curr_column = 'K'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['K' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, reihen_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # Üformat 2 Sp. 18.05cm
             new_x_cm = 18.05
             curr_column = 'L'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['L' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, reihen_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
             # Üformat hoch 26.9cm
             new_x_cm = 26.9
             curr_column = 'M'
             result_DPI = calculate_dpi_newx(img_pix_x, new_x_cm)
-            zschriften_sheet['M' + str(excel_row)] = result_DPI
-            set_fill_color(result_DPI, min_targ_DPI, ideal_targ_DPI, reihen_sheet, excel_row, curr_column)
+            curr_sheet[curr_column + str(excel_row)] = result_DPI
+            set_fill_color(result_DPI, excel_row, curr_column, curr_sheet)
 
 # INTERACTIVE SHEET
 
+            curr_sheet = interactive_sheet
+
             # Max @ 400DPI & 800DPI
             min_targ_DPI_width, ideal_targ_DPI_width = calculate_max_widths(img_pix_x)
-            interactive_sheet['H' + str(excel_row)] = min_targ_DPI_width
-            interactive_sheet['I' + str(excel_row)] = ideal_targ_DPI_width
+            curr_sheet['H' + str(excel_row)] = min_targ_DPI_width
+            curr_sheet['I' + str(excel_row)] = ideal_targ_DPI_width
 
             # INPUT cm for DPI calculation
+            curr_sheet['K' + str(excel_row)] = 25
             formula_cm_to_DPI = f"=ROUND({img_pix_x}/(K{excel_row}/2.54), 0)"
-            interactive_sheet[f'L{excel_row}'] = formula_cm_to_DPI
+            curr_sheet[f'L{excel_row}'] = formula_cm_to_DPI
 
 # Calculate the number of images
 excel_row = excel_row + 1
@@ -443,7 +469,7 @@ reihen_sheet.column_dimensions['A'].width, reihen_sheet.column_dimensions['B'].w
 interactive_sheet.column_dimensions['A'].width, interactive_sheet.column_dimensions['B'].width = 21, 21
 zschriften_sheet.column_dimensions['A'].width, zschriften_sheet.column_dimensions['B'].width = 21, 21
 zschriften_sheet.merge_cells('H3:N3')
-zschriften_sheet['H3'] = "Under 300 DPI red, 300-600 DPI yellow. Grey are problem files; check Bitmap DPI by hand."
+zschriften_sheet['H3'] = f"For fotos: under {min_targ_DPI} DPI red, {min_targ_DPI}-{ideal_targ_DPI} DPI yellow. Bitmap: under {min_targ_DPI_bit} DPI red, {min_targ_DPI_bit}-{ideal_targ_DPI_bit} DPI yellow."
 zschriften_sheet['H3'].font = bold_font
 zschriften_sheet['H3'].alignment = Alignment(horizontal='center')
 interactive_sheet.column_dimensions['F'].alignment = Alignment(horizontal='center')
@@ -466,7 +492,4 @@ print(colorama.Fore.BLUE + 'Remember that the image info is only as good as the 
 time.sleep(5)
 
 # TODO note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
-# TODO Bitmap do DPI
-#      Strichzeichnungen in Bitmap-Formaten (*.bmp, häufig genutzt für
-#      nicht vektorisierte Schwarzweiß-Strichzeichnungen) mind. 1200 dpi, besser 1600dpi
-#      Beilagen give sizes in CM and give which DIN A size they are
+# TODO Beilagen give sizes in CM and give which DIN A size they are
