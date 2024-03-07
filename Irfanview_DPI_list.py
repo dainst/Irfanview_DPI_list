@@ -17,8 +17,9 @@ from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment
 
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, ttk
 import tkinter.messagebox as messagebox
+from tkinter import StringVar
 
 def check_version(__version__):
     url = 'https://fabfab1.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
@@ -41,7 +42,7 @@ def check_version(__version__):
 
 def get_irfanview_path():
     global irfan_prog_cmd
-    # ********* Find and Run Irfanview
+    # Find and Run Irfanview
     def check_irfan_exists(irfan_prog_cmd):
         if not os.path.isfile(irfan_prog_cmd):
             irfan_prog_cmd = None
@@ -50,19 +51,19 @@ def get_irfanview_path():
     irfan_prog_name = 'i_view64.exe'
     irfan_prog_cmd = find_executable(irfan_prog_name)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = '\\Program Files\\IrfanView\\i_view64.exe'
+        irfan_prog_cmd = r'\Program Files\IrfanView\i_view64.exe'
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = (os.path.expanduser('~')) + '\\PortableApps\\IrfanViewPortable\\App\\IrfanView64\\i_view64.exe'
+        irfan_prog_cmd = os.path.join(os.path.expanduser('~'), r'PortableApps\IrfanViewPortable\App\IrfanView64\i_view64.exe')
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
         irfan_prog_name = 'i_view32.exe'
         irfan_prog_cmd = find_executable(irfan_prog_name)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = (os.path.expanduser('~')) + '\\PortableApps\\IrfanViewPortable\\App\\IrfanView\\i_view32.exe'
+        irfan_prog_cmd = os.path.join(os.path.expanduser('~'), r'PortableApps\IrfanViewPortable\App\IrfanView\i_view32.exe')
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = 'Program Files (x86)\\IrfanView\\i_view32.exe'
+        irfan_prog_cmd = r'Program Files (x86)\IrfanView\i_view32.exe'
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
         raise Exception('Irfanview not installed, please install and run again')
@@ -70,6 +71,7 @@ def get_irfanview_path():
 def generate_excel():
     global pic_dir
     global irfan_prog_cmd
+
     # Filenames
     irfan_info_txt = 'DPI_list_irfanviewOUT.txt'
 
@@ -77,6 +79,7 @@ def generate_excel():
     irfan_info_txt = os.path.join(pic_dir, irfan_info_txt)
     if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
         os.remove(irfan_info_txt)
+    irfan_prog_run = irfan_prog_cmd + ' ' + '"' + os.path.join(pic_dir, '*.*') + '"' + ' /silent /info=' + '"' + irfan_info_txt + '"'
 
     # Generate Excel Filename
     last_pic_dir_name = os.path.basename(os.path.normpath(pic_dir))
@@ -90,9 +93,10 @@ def generate_excel():
         print("\n ******** Excel File Open! Please close it and run again.")
         time.sleep(10)
         sys.exit()
-    irfan_prog_cmd = irfan_prog_cmd + ' ' + '"' + pic_dir + '*.*' + '"' + ' /silent /info=' + '"' + irfan_info_txt + '"'
+
+    print(irfan_prog_run)   # DEBUG
     with open(os.devnull, 'w') as devnull:
-        subprocess.check_call(irfan_prog_cmd, stderr=devnull)
+        subprocess.check_call(irfan_prog_run, stderr=devnull)
 
     # setup PROBLEM colors and bold for Excel
     red_fill = PatternFill(start_color='FFFF0000',
@@ -486,7 +490,6 @@ def generate_excel():
 
     if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
         os.remove(irfan_info_txt)
-    root.destroy()
 
 def choose_directory():
     global pic_dir
@@ -494,19 +497,22 @@ def choose_directory():
     if not pic_dir:
         messagebox.showerror("Error", "No folder selected, please run again")
         return
-    pic_dir = pic_dir + '/'
     generate_excel()
+    root.destroy()
 
-def choose_directory_txt():
+def choose_fig_directories():
     global pic_dir
-    pic_dir = filedialog.askdirectory(title="Select Picture Folder")
-    if not pic_dir:
+    parent_dir = filedialog.askdirectory(title="Select Parent Directory")
+    if not parent_dir:
         messagebox.showerror("Error", "No folder selected, please run again")
         return
-    pic_dir = pic_dir + '/'
-    generate_excel()
+    subdirs = [os.path.normpath(os.path.join(parent_dir, d)) for d in os.listdir(parent_dir) if os.path.isdir(os.path.join(parent_dir, d))]
+    for subdir in subdirs:
+        pic_dir = subdir
+        generate_excel()
+    root.destroy()
 
-# ********** Main
+# ********** GUI
 
 try:
     check_version(__version__)
@@ -522,18 +528,28 @@ except Exception as e:
 
 root = tk.Tk()
 root.title("Irfanview DPI Spreadsheet")
-root.geometry("600x300")
+root.geometry("600x250")
 
-label = tk.Label(root, text="Irfanview DPI Spreadsheet", font=("Arial", 25), bg='#164194', fg='white')
+style = ttk.Style()
+style.configure("BW.TLabel", foreground="#164194", font=("Arial", 25, "bold"))
+
+style = ttk.Style()
+style.configure("BW.TButton", font=("default", 14))
+
+label = ttk.Label(root, text="Irfanview DPI Spreadsheet", style="BW.TLabel")
 label.pack(pady=10)
 
-button = tk.Button(root, text="Choose directory:", command=choose_directory, font=("Arial", 15), fg='#164194')
+button = ttk.Button(root, text="Choose directory with images: ", command=choose_directory, style="BW.TButton")
 button.pack(pady=10)
 
-button = tk.Button(root, text="Or choose a TXT with directory list:", command=choose_directory_txt, font=("Arial", 15), fg='#164194')
+button = ttk.Button(root, text="Or choose a directory to recursively process subdirectories: ", command=choose_fig_directories, style="BW.TButton")
 button.pack(pady=10)
+
+info_label2 = ttk.Label(root, text="This window will close when finished.\n", foreground="red", anchor='center')
+info_label2.pack(side=tk.BOTTOM, fill='x')
+info_label1 = ttk.Label(root, text="Please be patient, with many files or directories this program will take a while.", foreground="red", anchor='center')
+info_label1.pack(side=tk.BOTTOM, fill='x')
 
 root.mainloop()
 
 # TODO note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
-# TODO progress bar
