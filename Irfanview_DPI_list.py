@@ -527,14 +527,23 @@ except Exception as e:
 root = tk.Tk()
 root.title("Irfanview DPI Spreadsheet")
 root.geometry("600x250")
-root.iconbitmap('icon\IrfanXcel.ico')
 
+# Icon
+if getattr(sys, 'frozen', False):
+    script_dir = sys._MEIPASS
+else:
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+icon_path = os.path.join(script_dir, 'icon', 'IrfanXcel.ico')
+root.iconbitmap(icon_path)
+
+# Styles
 style = ttk.Style()
 style.configure("BW.TLabel", foreground="#164194", font=("Arial", 25, "bold"))
 
 style = ttk.Style()
 style.configure("BW.TButton", font=("default", 14))
 
+# Widgets
 label = ttk.Label(root, text="Irfanview DPI Spreadsheet", style="BW.TLabel")
 label.pack(pady=10)
 
@@ -551,5 +560,6 @@ info_label1.pack(side=tk.BOTTOM, fill='x')
 
 root.mainloop()
 
-# TODO note for me on how to use pyinstaller. From terminal:
-#       pyinstaller --onefile --clean --noconsole --icon=icon\IrfanXcel.ico Irfanview_DPI_list.py
+# note for me on how to use pyinstaller. From terminal:
+#       pyinstaller --onefile --clean --noconsole Irfanview_DPI_list.py
+#       pyinstaller --onefile --clean --noconsole --icon=icon/IrfanXcel.ico --add-data "icon/IrfanXcel.ico;icon/" Irfanview_DPI_list.py

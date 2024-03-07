@@ -5,7 +5,7 @@ a = Analysis(
     ['Irfanview_DPI_list.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('icon/IrfanXcel.ico', 'icon/')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -34,4 +34,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=['icon\\IrfanXcel.ico'],
 )
