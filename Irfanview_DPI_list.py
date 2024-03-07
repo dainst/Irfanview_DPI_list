@@ -8,7 +8,6 @@ import subprocess
 import os
 import sys
 import datetime
-import time
 import requests
 
 from distutils.spawn import find_executable
@@ -19,7 +18,6 @@ from openpyxl.styles import PatternFill, Font, Alignment
 import tkinter as tk
 from tkinter import filedialog, ttk
 import tkinter.messagebox as messagebox
-from tkinter import StringVar
 
 def check_version(__version__):
     url = 'https://fabfab1.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
@@ -90,11 +88,9 @@ def generate_excel():
         if os.path.exists(excel_filename):  # Delete Excel file if it exists
             os.remove(excel_filename)
     except PermissionError:
-        print("\n ******** Excel File Open! Please close it and run again.")
-        time.sleep(10)
+        messagebox.showerror("Error", "\n ******** Excel File Open! Please close it and run again.")
         sys.exit()
 
-    print(irfan_prog_run)   # DEBUG
     with open(os.devnull, 'w') as devnull:
         subprocess.check_call(irfan_prog_run, stderr=devnull)
 
@@ -508,6 +504,8 @@ def choose_fig_directories():
         return
     subdirs = [os.path.normpath(os.path.join(parent_dir, d)) for d in os.listdir(parent_dir) if os.path.isdir(os.path.join(parent_dir, d))]
     for subdir in subdirs:
+        if not os.listdir(subdir):
+            continue
         pic_dir = subdir
         generate_excel()
     root.destroy()
@@ -529,6 +527,7 @@ except Exception as e:
 root = tk.Tk()
 root.title("Irfanview DPI Spreadsheet")
 root.geometry("600x250")
+root.iconbitmap('icon\IrfanXcel.ico')
 
 style = ttk.Style()
 style.configure("BW.TLabel", foreground="#164194", font=("Arial", 25, "bold"))
@@ -552,4 +551,5 @@ info_label1.pack(side=tk.BOTTOM, fill='x')
 
 root.mainloop()
 
-# TODO note for me on how to use pyinstaller:   pyinstaller --onefile --clean Irfanview_DPI_list.py
+# TODO note for me on how to use pyinstaller. From terminal:
+#       pyinstaller --onefile --clean --noconsole --icon=icon\IrfanXcel.ico Irfanview_DPI_list.py
