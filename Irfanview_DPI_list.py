@@ -565,3 +565,5 @@ root.mainloop()
 #       pyinstaller --onefile --clean --noconsole --icon=icon/IrfanXcel.ico --add-data "icon/IrfanXcel.ico;icon/" Irfanview_DPI_list.py
 # Add DPI targets to all sheets
 # recompile with version number
+# make minimum 300 DPI
+# give only 1 value for DPI, not x, y
