@@ -158,8 +158,8 @@ def generate_excel():
         'Image Orient.': 'E',
         'Print Size (CM)': 'F',
         'Print Size (IN)': 'G',
-        'Max @ 400DPI': 'H',
-        'Max @ 800DPI': 'I',
+        'Max @ 300DPI': 'H',
+        'Max @ 600DPI': 'I',
         '': 'J',
         'Goal cm': 'K',
         'DPI result': 'L',
@@ -181,6 +181,8 @@ def generate_excel():
     for header in header_to_col_R:
         col = header_to_col_R[header]
         reihen_sheet[f'{col}{excel_row}'] = header
+    for col in range(1, 14):  # 1-13 corresponds to columns A-M
+        reihen_sheet.cell(row=4, column=col).font = italic_font
 
     # Write Headers for Excel Interactive sheet
     interactive_sheet["A1"] = 'DPI List -- Data from IrfanView -- ' + datetime.datetime.now().strftime(
@@ -188,6 +190,8 @@ def generate_excel():
     for header in header_to_col_I:
         col = header_to_col_I[header]
         interactive_sheet[f'{col}{excel_row}'] = header
+    for col in range(1, 13):  # 1-12 corresponds to columns A-L
+        interactive_sheet.cell(row=4, column=col).font = italic_font
 
     excel_row = excel_row + 2
 
@@ -226,13 +230,13 @@ def generate_excel():
                 continue
 
             if img_header == 'Resolution':
-                zschriften_sheet['C' + str(excel_row)] = img_info
-                reihen_sheet['C' + str(excel_row)] = img_info
-                interactive_sheet['C' + str(excel_row)] = img_info
                 img_info = img_info.split(' DPI')[0]
                 img_DPI_x, img_DPI_y = img_info.split(' x ')
                 img_DPI_x = int(img_DPI_x)
                 img_DPI_y = int(img_DPI_y)
+                zschriften_sheet['C' + str(excel_row)] = str(img_DPI_x) + ' DPI'
+                reihen_sheet['C' + str(excel_row)] = str(img_DPI_x) + ' DPI'
+                interactive_sheet['C' + str(excel_row)] = str(img_DPI_x) + ' DPI'
                 if not img_DPI_x == img_DPI_y:
                     reihen_sheet['C' + str(excel_row)].fill = red_fill
                 if img_info in ['0 x 0', '96 x 96']:
@@ -289,8 +293,8 @@ def generate_excel():
 
                 # SETUP DPI TARGETS AND MATH
 
-                ideal_targ_DPI = 800
-                min_targ_DPI = 400
+                ideal_targ_DPI = 600
+                min_targ_DPI = 300
                 ideal_targ_DPI_bit = 1600
                 min_targ_DPI_bit = 1200
 
@@ -460,29 +464,36 @@ def generate_excel():
     interactive_sheet.column_dimensions['A'].width, interactive_sheet.column_dimensions['B'].width = 21, 21
     zschriften_sheet.column_dimensions['A'].width, zschriften_sheet.column_dimensions['B'].width = 21, 21
 
+# Column headers
     zschriften_sheet.merge_cells('H3:N3')
     zschriften_sheet[
         'H3'] = f"For fotos: under {min_targ_DPI} DPI red, {min_targ_DPI}-{ideal_targ_DPI} DPI yellow. Bitmap: under {min_targ_DPI_bit} DPI red, {min_targ_DPI_bit}-{ideal_targ_DPI_bit} DPI yellow."
     zschriften_sheet['H3'].font = bold_font
     zschriften_sheet['H3'].alignment = Alignment(horizontal='center')
 
+    reihen_sheet.merge_cells('H3:M3')
+    reihen_sheet[
+        'H3'] = f"For fotos: under {min_targ_DPI} DPI red, {min_targ_DPI}-{ideal_targ_DPI} DPI yellow. Bitmap: under {min_targ_DPI_bit} DPI red, {min_targ_DPI_bit}-{ideal_targ_DPI_bit} DPI yellow."
+    reihen_sheet['H3'].font = bold_font
+    reihen_sheet['H3'].alignment = Alignment(horizontal='center')
+
     interactive_sheet.merge_cells('H3:I3')
     interactive_sheet['H3'] = "Max widths in cm"
     interactive_sheet['H3'].alignment = Alignment(horizontal='center')
     interactive_sheet.column_dimensions['F'].alignment = Alignment(horizontal='center')
     interactive_sheet.column_dimensions['L'].alignment = Alignment(horizontal='center')
-
     interactive_sheet['K3'] = "INPUT"
     interactive_sheet['L3'] = "OUTPUT"
-    interactive_sheet['K3'].alignment = interactive_sheet['L3'].alignment = Alignment(horizontal='center')
+    interactive_sheet['K3'].alignment = interactive_sheet['L3'].alignment = interactive_sheet['K4'].alignment = interactive_sheet['L4'].alignment = Alignment(horizontal='center')
+    interactive_sheet['H3'].font = interactive_sheet['K3'].font = interactive_sheet['L3'].font = bold_font
 
-    # After creating all the sheets and before saving the workbook
+# After creating all the sheets and before saving the workbook
     excel_workbook.active = zschriften_sheet
 
     excel_workbook.save(filename=excel_filename)
     excel_workbook.close()
 
-    # Remove TXT file
+# Remove TXT file
 
     if os.path.exists(irfan_info_txt):  # Delete TXT file if it already exists
         os.remove(irfan_info_txt)
@@ -563,7 +574,3 @@ root.mainloop()
 # note for me on how to use pyinstaller. From terminal:
 #       pyinstaller --onefile --clean --noconsole Irfanview_DPI_list.py
 #       pyinstaller --onefile --clean --noconsole --icon=icon/IrfanXcel.ico --add-data "icon/IrfanXcel.ico;icon/" Irfanview_DPI_list.py
-# Add DPI targets to all sheets
-# recompile with version number, put number on GUI
-# make minimum 300 DPI, good 600 DPI
-# give only 1 value for DPI, not x, y

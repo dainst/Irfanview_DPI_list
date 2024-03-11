@@ -1,4 +1,4 @@
-('C:\\Users\\fAB\\PycharmProjects\\Irfanview_DPI_list\\build\\Irfanview_DPI_list\\PYZ-00.pyz',
+('C:\\Users\\fAB\\GitHubRepos\\Irfanview_DPI_list\\build\\Irfanview_DPI_list\\PYZ-00.pyz',
  [('__future__', 'C:\\Program Files\\Python\\Lib\\__future__.py', 'PYMODULE'),
   ('_aix_support',
    'C:\\Program Files\\Python\\Lib\\_aix_support.py',
