@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __license__ = 'GPL'
-__version__ = '0.2'
+__version__ = '0.9'
 
 # ********** Setup
 import subprocess
@@ -544,7 +544,7 @@ style = ttk.Style()
 style.configure("BW.TButton", font=("default", 14))
 
 # Widgets
-label = ttk.Label(root, text="Irfanview DPI Spreadsheet", style="BW.TLabel")
+label = ttk.Label(root, text="Irfanview DPI Spreadsheet v0.9", style="BW.TLabel")
 label.pack(pady=10)
 
 button = ttk.Button(root, text="Choose directory with images: ", command=choose_directory, style="BW.TButton")
