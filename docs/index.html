@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=windows-1252">
-    <title>Image Quality Checker</title>
+    <title>Irfanview DPI List</title>
     <style>
     body {
       background-color: #014495;
@@ -9,65 +9,64 @@
       color: white; 
     }
     
-    h1 {
+    h1, h2 {
       text-align: center; 
+    }
+
+    h3 {
+      margin-left: 20px;
+    }
+    
+    p {
+      margin-left: 20px;
+      margin-right: 20px;
     }
   </style>
   </head>
   <body>
-    <h1>Image Quality Checker</h1>
-    <div style="text-align: center;">F. Buccellati -- 21.11.23</div>
+    <h1>Irfanview DPI List</h1>
+    <div style="text-align: center;">F. Buccellati -- 11 March 2024</div>
     <h2>Introduction</h2>
-    <p>The Image Quality Checker is a program that analyzes a folder containing
-      images to determine if the resolution and dimensions of those images meets
-      the requirements for usage in print publications and materials. By
-      extracting technical metadata about each image and applying custom quality
-      assessment formulas, the program generates an Excel report specifying
-      which images pass or fail predefined quality criteria.</p>
+    <p>The Irfanview DPI List is a program that analyzes a folder or a series of subfolders containing
+      images to determine their resolutions and dimensions, which are critical for
+      assessing usability in various print and digital formats. It generates an Excel report
+      that details these metrics for each image, aiding in the quality assurance process.</p>
     <h2>Goals &amp; Usefulness</h2>
-    <p>Manually checking image resolutions and dimensions across a large set of
-      images can be an extremely tedious and time consuming process. This
-      automated tool eliminates the need to manually inspect and evaluate images
-      one-by-one. By extracting resolution specifications and vital technical
-      data using a robust CLI tool called IrfanView, and by leveraging the
-      analysis capabilities of Excel, this program can assess hundreds or
-      thousands of images almost instantly.</p>
+    <p>This tool streamlines the process of checking image resolution and dimensions
+      across a collection, providing a first step before manual inspection. By leveraging
+      IrfanView's capabilities to generate image metadata and organizing this data into
+      an informative Excel report, users can quickly identify images that meet their specific
+      requirements for quality and suitability.</p>
     <h2>Excel Structure</h2>
-    <p>The main output of the program is an Excel Workbook containing two sheets
-      - one sheet presents all of the raw technical data extracted from
-      IrfanView including dimensions, resolution, color space, EXIF information,
-      and more. The second "interactive" sheet contains distilled information
-      about each image pertaining to quality analysis, including file name,
-      horizontal and vertical DPI resolution, width and height of the image in
-      inches, and most importantly - a calculated Quality Coefficient.</p>
-    <h2>Use Cases</h2>
-    <p>This Image Quality Checker delivers value to anyone preparing images for
-      print publications and materials, such as photographers, graphic
-      designers, scientists and researchers, marketing creators, book
-      publishers, and more. Some examples of use cases are assessing images for
-      magazine ads, analyzing figures for journal article submissions,
-      evaluating photos for posters at academic conferences, or checking images
-      as part of the book publishing workflow.</p>
-    <h2>Quality Coefficient</h2>
-    <p>To determine whether an image is high enough resolution for the intended
-      use case, the program employs a Quality Coefficient formula to assign a
-      score to each image. This coefficient combines the key metrics of DPI and
-      dimensions into one numerical benchmark value that can be compared to
-      acceptability thresholds. While proprietary image quality assessment
-      algorithms do exist from companies like Adobe, this open Quality
-      Coefficient formula allows full control over the criteria used to define
-      what constitutes a "high quality" image on a customizable basis for each
-      desired use case.</p>
+    <p>The output of the program is an Excel workbook composed of three detailed sheets:</p>
+    <h3>DAI-Zeitschriften</h3>
+    <p>This sheet lists the essential metadata extracted from each image, such as file name,
+      image type, resolution, dimensions in pixels, and print sizes in various units. It is designed
+      for quick reference, and gives the DPI for each image according to the standard DAI journal measurements.</p>
+    <h3>DAI-Reihen</h3>
+    <p>Similar to DAI-Zeitschriften but tailored for the DAI book series, this sheet
+      includes comprehensive metadata while focusing on specific print dimensions and
+      resolutions for both A4 and Überformat sizes.</p>
+    <h3>Max+Interactive</h3>
+    <p>This interactive sheet provides dynamic calculations of potential print sizes at
+      2 different DPI settings, allowing users to see the
+      corresponding print dimensions for each image. Also, it allows users to input a desired image width
+      to determine the DPI of the image at that size.</p>
     <h2>Program Structure</h2>
-    <p>On a technical level, the core workflow of the Image Quality Checker code
-      is: 1) Leverage the command line interface of IrfanView image viewer to
-      batch extract image metadata like resolution DPI and dimensions into a
-      temporary text file 2) Parse this text file using Python scripts to pull
-      out the data needed for analysis 3) Perform Quality Coefficient
-      calculations in Python on the dimensions and DPI numbers 3) Dynamically
-      generate an Excel report containing raw data and results of quality checks
-      based on custom thresholds using the openpyxl module in Python. The use of
-      CLI tools, scripting, and office document generation offers fast,
-      lightweight, portable automation for assessing image quality at scale.</p>
+    <p>The Irfanview DPI List script operates by executing several key steps:</p>
+    <ul>
+      <li>It first checks the current version of the script against an online repository to ensure the user has the latest version.</li>
+      <li>The script then identifies the path to the IrfanView executable, which is necessary to extract image metadata.</li>
+      <li>Users can select a specific directory or a parent directory to analyze multiple image folders recursively.</li>
+      <li>Using IrfanView's command-line interface, the script extracts detailed image metadata and compiles it into a text file.</li>
+      <li>This metadata is then parsed and organized into an Excel workbook with three specialized sheets, offering various insights and data representations for the analyzed images.</li>
+      <li>The program employs Python's openpyxl library to create and format the Excel report, ensuring that the data is clear, accurate, and useful for the end-user.</li>
+    </ul>
+    <h2>Note</h2>
+    <p>The program does not replace the user's examination of the files. These should still be examined for resolution problems,
+      such as low resolution images that have been interpolated to higher resolutions, or for other issues that may not be apparent from the metadata.
+    Also, the program only examines the DPI on the X axis, so users should determine if the images are adequate or too large in the Y dimension.
+    However, the program does give a warning if the DPI along the Y axis does not match the X axis.</p>
+    </p>
   </body>
 </html>
