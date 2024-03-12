@@ -574,3 +574,7 @@ root.mainloop()
 # note for me on how to use pyinstaller. From terminal:
 #       pyinstaller --onefile --clean --noconsole Irfanview_DPI_list.py
 #       pyinstaller --onefile --clean --noconsole --icon=icon/IrfanXcel.ico --add-data "icon/IrfanXcel.ico;icon/" Irfanview_DPI_list.py
+#
+# Consider not using --onefile or use --onedir instead if feasible.
+# Obtain a digital certificate and sign your executable.
+# virus -- Mal.Wind32.TRX.XXPE50FFF078
