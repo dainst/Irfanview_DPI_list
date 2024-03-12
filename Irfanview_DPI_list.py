@@ -49,22 +49,22 @@ def get_irfanview_path():
     irfan_prog_name = 'i_view64.exe'
     irfan_prog_cmd = find_executable(irfan_prog_name)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = r'\Program Files\IrfanView\i_view64.exe'
+        irfan_prog_cmd = r'C:\Program Files\IrfanView\i_view64.exe'
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = os.path.join(os.path.expanduser('~'), r'PortableApps\IrfanViewPortable\App\IrfanView64\i_view64.exe')
+        irfan_prog_cmd = os.path.join(os.path.expanduser('~'), r'C:\PortableApps\IrfanViewPortable\App\IrfanView64\i_view64.exe')
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
         irfan_prog_name = 'i_view32.exe'
         irfan_prog_cmd = find_executable(irfan_prog_name)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = os.path.join(os.path.expanduser('~'), r'PortableApps\IrfanViewPortable\App\IrfanView\i_view32.exe')
+        irfan_prog_cmd = os.path.join(os.path.expanduser('~'), r'C:\PortableApps\IrfanViewPortable\App\IrfanView\i_view32.exe')
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
-        irfan_prog_cmd = r'Program Files (x86)\IrfanView\i_view32.exe'
+        irfan_prog_cmd = r'C:\Program Files (x86)\IrfanView\i_view32.exe'
         irfan_prog_cmd = check_irfan_exists(irfan_prog_cmd)
     if not irfan_prog_cmd:
-        raise Exception('Irfanview not installed, please install and run again')
+        raise Exception('Irfanview not installed, please install and run again./nIf installed, please check that the Irfanview_DPI_list program is running from your laptop harddrive/nand not a cloud drive.')
 
 def generate_excel():
     global pic_dir
@@ -572,10 +572,5 @@ info_label1.pack(side=tk.BOTTOM, fill='x')
 root.mainloop()
 
 # note for me on how to use pyinstaller. From terminal:
-#       pyinstaller --clean --noconsole Irfanview_DPI_list.py
-#       pyinstaller --onefile --clean --noconsole --icon=icon/IrfanXcel.ico --add-data "icon/IrfanXcel.ico;icon/" Irfanview_DPI_list.py
 #       pyinstaller --clean --noconsole --icon=icon/IrfanXcel.ico --add-data "icon/IrfanXcel.ico;icon/" Irfanview_DPI_list.py
-#
-# Consider not using --onefile or use --onedir instead if feasible.
-# Obtain a digital certificate and sign your executable.
-# virus -- Mal.Wind32.TRX.XXPE50FFF078
+#  NO   pyinstaller --onefile --clean --noconsole --icon=icon/IrfanXcel.ico --add-data "icon/IrfanXcel.ico;icon/" Irfanview_DPI_list.py
