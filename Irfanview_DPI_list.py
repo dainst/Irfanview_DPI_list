@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __license__ = 'GPL'
-__version__ = '0.9'
+__version__ = '1.0'
 
 # ********** Setup
 import subprocess
@@ -20,7 +20,7 @@ from tkinter import filedialog, ttk
 import tkinter.messagebox as messagebox
 
 def check_version(__version__):
-    url = 'https://github.com/dainst/Irfanview_DPI_list/i_dpi_list_ver.html'
+    url = 'https://dainst.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
     try:
         resp = requests.get(url)
         resp.raise_for_status()
