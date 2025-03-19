@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 __license__ = 'GPL'
-__version__ = '1.0'
+__version__ = '0.9'
 
 # ********** Setup
 import subprocess
