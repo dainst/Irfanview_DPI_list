@@ -20,12 +20,12 @@ from tkinter import filedialog, ttk
 import tkinter.messagebox as messagebox
 
 def check_version(__version__):
-    url = 'https://fabfab1.github.io/Irfanview_DPI_list/i_dpi_list_ver.html'
+    url = 'https://github.com/dainst/Irfanview_DPI_list/i_dpi_list_ver.html'
     try:
         resp = requests.get(url)
         resp.raise_for_status()
     except requests.exceptions.RequestException as e:
-        messagebox.showerror("Error", "No internet connection, push OK to proceed")
+        messagebox.showerror("Error", "No internet connection or version# not found, push OK to proceed")
         return
 
     try:
